@@ -101,24 +101,40 @@ if (typeof define !== &#x27;function&#x27;) { var define = require(&#x27;amdefin
 /* jshint ignore:end */
 
 define([&quot;underscore&quot;], function (_) {
-	function exclusiveBetween(boundaries, item) {
-		return boundaries[0] &lt; item &amp;&amp; item &lt; boundaries[1];
-	}
-
-	function inclusiveBetween(boundaries, item) {
-		return boundaries[0] &lt;= item &amp;&amp; item &lt;= boundaries[1];
-	}
-
+	&#x27;use strict&#x27;;
 	_.mixin({
-		between: function(boundaries, item, exclusive) {
-			// determine which operator to use.
-			var operator = exclusive ? exclusiveBetween : inclusiveBetween;
+		// Get/set the value of a nested property
+		deep: function (obj, key, value) {
 
-			// curry operator
-			operator = _.partial(operator, boundaries);
+			var keys = key.replace(/\[([&quot;&#x27;]?)([^\1]+?)\1?\]/g, &#x27;.$2&#x27;).replace(/^\./, &#x27;&#x27;).split(&#x27;.&#x27;),
+				root,
+				i = 0,
+				n = keys.length;
 
-			return _.isArray(item) ? _.every(item, operator) : operator(item);
+			// Set deep value
+			if (arguments.length &gt; 2) {
+
+				root = obj;
+				n--;
+
+				while (i &lt; n) {
+					key = keys[i++];
+					obj = obj[key] = _.isObject(obj[key]) ? obj[key] : {};
+				}
+
+				obj[keys[i]] = value;
+
+				value = root;
+
+			// Get deep value
+			} else {
+				while ((obj = obj[keys[i++]]) != null &amp;&amp; i &lt; n) {};
+					value = i &lt; n ? void 0 : obj;
+			}
+
+			return value;
 		}
+
 	});
 });
 
