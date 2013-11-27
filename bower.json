@@ -1,6 +1,6 @@
 {
   "name": "underscore.deep",
-  "main": "underscore.deep.js",
+  "main": "src/underscore.deep.js",
   "version": "0.0.0",
   "dependencies": {
     "underscore": "~1.5.2"
